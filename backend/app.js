@@ -12,6 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/form', FormRouter);
 app.use('/user', UserRouter);
+app.use('/api', FormRouter);
 
 const PORT = process.env.PORT || 8000;
 

@@ -1,9 +1,11 @@
 import express from 'express';
-import { createForm, getForms, getFormById, updateForm, deleteForm } from '../controllers/FormController.js';
+import { createForm, getForms, getFormById, updateForm, deleteForm, processForm } from '../controllers/FormController.js';
 import { apiLimiter, authenticateTokenAndCheckUserRole,  formLimiter,  requireAdmin } from '../middleware/middlewares.js';
 
 const FormRouter = express.Router();
 
+// Ruta para procesar el formulario y verificar reCAPTCHA
+FormRouter.post('/process-Form',processForm);
 
 
 FormRouter.post('/', /*formLimiter,*/ createForm);

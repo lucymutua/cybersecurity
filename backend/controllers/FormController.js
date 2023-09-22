@@ -69,3 +69,28 @@ export const deleteForm = async (req, res, next) => {
     next(error);
   }
 };
+
+// Controlador para procesar el formulario
+export const processForm = async (req, res) => {
+  const recaptchaResponse = req.body.recaptchaResponse; // Recibes la respuesta reCAPTCHA del cliente
+
+  try {
+    const recaptchaVerification = await verifyRecaptcha(recaptchaResponse);
+
+    if (recaptchaVerification.data.success) {
+      // La respuesta reCAPTCHA es válida, procesa el formulario aquí
+      const formData = req.body; // Los datos del formulario están en req.body
+      // Procesa los datos del formulario, envía correos, etc.
+      
+      // Devuelve una respuesta de éxito
+      res.status(201).json({ message: 'Formulario procesado con éxito' });
+    } else {
+      // La respuesta reCAPTCHA no es válida, responde con un error
+      res.status(400).json({ error: 'Error de reCAPTCHA' });
+    }
+  } catch (error) {
+    // Manejar errores de la solicitud al servidor de reCAPTCHA
+    console.error('Error de verificación de reCAPTCHA:', error);
+    res.status(500).json({ error: 'Error de servidor' });
+  }
+};

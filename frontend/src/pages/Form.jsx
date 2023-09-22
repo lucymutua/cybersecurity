@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
+import ReCAPTCHA from "react-google-recaptcha";
 
 function ContactForm() {
   const [formData, setFormData] = useState({
@@ -17,6 +18,8 @@ function ContactForm() {
     message: '',
   });
 
+  const [recaptchaValue, setRecaptchaValue] = useState(null); 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -24,6 +27,11 @@ function ContactForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!recaptchaValue) {
+      // Mostrar un mensaje de error o realizar alguna acción si reCAPTCHA no se completó.
+      setAlert({ type: 'error', message: 'Please complete the reCAPTCHA.' });
+      return;
+    }
 
     try {
       const response = await axios.post('http://localhost:8000/form', formData);
@@ -49,6 +57,17 @@ function ContactForm() {
       console.error('Network error:', error);
     }
   };
+
+  // Función para verificar reCAPTCHA
+function verifyRecaptcha(recaptchaResponse) {
+  const secretKey = '6LfmiUUoAAAAACJq9_7CN69BL4hzPVW7FXd8zpYY'; // Reemplaza con tu clave secreta de reCAPTCHA
+  return axios.post('https://www.google.com/recaptcha/api/siteverify', null, {
+    params: {
+      secret: secretKey,
+      response: recaptchaResponse,
+    },
+  });
+}
 
   return (
     <>
@@ -119,6 +138,12 @@ function ContactForm() {
                   required
                 />
               </div>
+
+              <ReCAPTCHA
+                sitekey="6LfmiUUoAAAAAONZ9ENBC5Q1WJk5xwirWCCuPFg7"
+                onChange={(value) => setRecaptchaValue(value)}
+              />
+
               <Button type="submit" variant="primary">
                 Submit
               </Button>
@@ -132,6 +157,7 @@ function ContactForm() {
 }
 
 export default ContactForm;
+
 
 
 
