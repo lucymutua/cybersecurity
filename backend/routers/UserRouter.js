@@ -1,16 +1,15 @@
 import express from 'express';
 import { getUsers, getUserById, updateUser, deleteUser, iniciarSesion, registrarUsuario  } from '../controllers/UserController.js';
-import { apiLimiter, authenticateTokenAndCheckUserRole,  loginLimiter,  requireAdmin } from '../middleware/middlewares.js';
+import { apiLimiter, authenticateTokenAndCheckUserRole,  loginLimiter, generateToken, requireAdmin } from '../middleware/middlewares.js';
 
 const UserRouter = express.Router();
 
-//UserRouter.post('/login', /* loginLimiter, */  loginUser);
-UserRouter.post('/login', iniciarSesion);
+console.log(generateToken)
+UserRouter.post('/login', iniciarSesion, generateToken);
+
 UserRouter.post('/register', registrarUsuario);
 
-
-
-UserRouter.get('/', /*apiLimiter,  authenticateTokenAndCheckUserRole, requireAdmin,*/ getUsers);
+UserRouter.get('/', apiLimiter,  authenticateTokenAndCheckUserRole, requireAdmin, getUsers);
 
 UserRouter.get('/:id', apiLimiter, authenticateTokenAndCheckUserRole, requireAdmin, getUserById);
 

@@ -5,6 +5,7 @@ import cors from 'cors';
 import UserRouter from './routers/UserRouter.js';
 
 const app = express();
+const PORT = process.env.PORT || 8000;
 
 
 app.use(express.json());
@@ -14,7 +15,7 @@ app.use('/form', FormRouter);
 app.use('/user', UserRouter);
 app.use('/api', FormRouter);
 
-const PORT = process.env.PORT || 8000;
+
 
 // Manejo de errores
 app.use((err, req, res, next) => {

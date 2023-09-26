@@ -3,10 +3,15 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../models/UserModel.js';
 import rateLimit from 'express-rate-limit';
+import { secretKey } from '../config.js'
 
 dotenv.config();
 
-const secretKey = process.env.SECRET_KEY
+//const secretKey = config.secretKey;
+
+console.log(secretKey, "hola")
+
+//const secretKey = process.env.SECRET_KEY
 const tokenExpirationTime = 3 * 60 * 60 * 1000; 
 
 
@@ -25,7 +30,7 @@ export async function encryptPasswordMiddleware(user, next) {
 }
 
 // Middleware para generar token
-export const generateToken = (req) => {
+export const generateToken = (req, next) => {
   try {
     const { _id, name, role } = req;
     const token = jwt.sign({ _id, name, role }, secretKey, {
@@ -41,41 +46,36 @@ export const generateToken = (req) => {
 };
 
 // Middleware para autenticar token y comparar con el rol en la base de datos
-export const authenticateTokenAndCheckUserRole = (req, res, next) => {
-  const token = req.header('Authorization');
-  if (!token) {
-    return res.status(404).json({ message: 'Token de autenticación no proporcionado' });
+export const authenticateTokenAndCheckUserRole = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization');
+
+    if (!token || !token.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Formato de token inválido' });
+    }
+
+    const tokenPayload = jwt.verify(token.substring(7), secretKey);
+
+    const { _id, name, role } = tokenPayload;
+
+    // Obtener el rol del usuario desde la base de datos
+    const roleFromDatabase = await User.findById(_id);
+
+    if (!roleFromDatabase || roleFromDatabase.role !== role) {
+      return res.status(401).json({ message: 'Acceso no autorizado' });
+    }
+
+    req._id = _id;
+    req.name = name;
+    req.role = role;
+
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Error al verificar el token' });
   }
-  // Verificar si el token ha expirado
-  const currentTimestamp = Date.now();
-  jwt.verify(token, secretKey, async (err, decodedToken) => {
-    if (err) {
-      return res.status(403).json({ message: 'Token no válido' });
-    }
-
-    if (decodedToken.exp * 1000 < currentTimestamp) {
-      return res.status(401).json({ message: 'Token expirado' });
-    }
-
-    const { _id, name, role } = decodedToken;
-
-    try {
-      // Obtener el rol del usuario desde la base de datos
-      const roleFromDatabase = await User.findById(_id);
-      if (roleFromDatabase.role !== role) {
-        return res.status(401).json({ message: 'Acceso no autorizado' });
-      }
-
-      req._id = _id;
-      req.name = name;
-      req.role = role;
-
-      next();
-    } catch (error) {
-      return res.status(500).json({ message: 'Error al verificar el rol del usuario' });
-    }
-  });
 };
+
 
 // Middleware para restringir el acceso a rutas solo para usuarios "admin"
 export const requireAdmin = (req, res, next) => {

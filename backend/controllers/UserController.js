@@ -1,8 +1,9 @@
 import { validationResult } from 'express-validator';
-import bcrypt from 'bcrypt';
+import bcrypt, { hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/UserModel.js';
 import { generateToken } from '../middleware/middlewares.js';
+import { secretKey } from '../config.js';
 
 
 export const registrarUsuario = async (req, res) => {
@@ -14,8 +15,9 @@ export const registrarUsuario = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    const salt = await bcrypt.genSalt(10)
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
       username,
@@ -26,14 +28,14 @@ export const registrarUsuario = async (req, res) => {
     });
 
     const savedUser = await newUser.save();
-    const token = jwt.sign({ id: savedUser._id }, 'tu_secreto', {
+    const token = jwt.sign({ id: savedUser._id }, secretKey, {
       expiresIn: '24h' // 24 horas de validez
     });
 
     res.status(200).json({ token });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error al crear el usuario' });
+    res.status(500).json({ error });
   }
 };
 
@@ -97,22 +99,25 @@ export const iniciarSesion = async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
- 
+    // Busca al usuario en la base de datos
     const user = await User.findOne({ username });
 
     if (!user) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
+    // Compara la contraseña proporcionada con la contraseña almacenada
     const esPasswordValida = await bcrypt.compare(password, user.password);
-
-    if (esPasswordValida) {
-      req.user = user;
+    console.log(esPasswordValida, user.password, password)
+    if (!esPasswordValida) {
+      return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
     }
-    // Genera un token JWT para la autenticación usando el middleware
-    const newtoken = generateToken(user);
+    next()
 
-    res.status(200).json({ token: newtoken })
+    // Genera un token JWT para la autenticación
+   /* const token = generateToken({ _id: user._id, name: user.name, role: user.role });
+
+    res.status(200).json({ token });*/
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error en el servidor' });

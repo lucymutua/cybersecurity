@@ -14,13 +14,13 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    validate: {
+    /*validate: {
       validator: function (password) {
         return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
       },
       message: props =>
         `${props.value} no cumple con los requisitos de seguridad: debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial.`,
-    },
+    },*/
   },
   email: {
     type: String,
