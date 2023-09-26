@@ -21,8 +21,8 @@ export const createForm = async (req, res, next) => {
 // Controlador para obtener todos los formularios de contacto
 export const getForms = async (req, res, next) => {
   try {
-      const forms = await Form.find();
-      res.status(200).json(forms);
+    const forms = await Form.find();
+    res.status(200).json(forms);
   } catch (error) {
     next(error);
   }
@@ -61,7 +61,7 @@ export const deleteForm = async (req, res, next) => {
   try {
     const formId = req.params.id;
     const deletedForm = await Form.findByIdAndDelete(formId);
-    res.status(200).json( {message: "Formulario eliminado correctamente"});
+    res.status(200).json({ message: "Formulario eliminado correctamente" });
     if (!deletedForm) {
       return res.status(404).json({ message: 'Formulario de contacto no encontrado' });
     }
@@ -72,20 +72,17 @@ export const deleteForm = async (req, res, next) => {
 
 // Controlador para procesar el formulario
 export const processForm = async (req, res) => {
-  const recaptchaResponse = req.body.recaptchaResponse; // Recibes la respuesta reCAPTCHA del cliente
+  const recaptchaResponse = req.body.recaptchaResponse;
 
   try {
     const recaptchaVerification = await verifyRecaptcha(recaptchaResponse);
-
     if (recaptchaVerification.data.success) {
-      // La respuesta reCAPTCHA es válida, procesa el formulario aquí
-      const formData = req.body; // Los datos del formulario están en req.body
-      // Procesa los datos del formulario, envía correos, etc.
-      
+
+      const formData = req.body;
+
       // Devuelve una respuesta de éxito
       res.status(201).json({ message: 'Formulario procesado con éxito' });
     } else {
-      // La respuesta reCAPTCHA no es válida, responde con un error
       res.status(400).json({ error: 'Error de reCAPTCHA' });
     }
   } catch (error) {

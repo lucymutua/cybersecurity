@@ -1,7 +1,7 @@
 {
   "type": "module",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
@@ -14,4 +14,5 @@
     "sanitize-html": "^2.11.0",
     "validator": "^13.11.0"
   }
+  
 }

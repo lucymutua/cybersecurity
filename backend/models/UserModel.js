@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import validator from 'validator';
 import { encryptPasswordMiddleware, errorMiddleware } from '../middleware/middlewares.js';
 
@@ -66,21 +66,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre('save', async function (next) {
-  try {
-    await encryptPasswordMiddleware(this, next);
-  } catch (error) {
-    errorMiddleware(error, next);
-  }
-});
-
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
-
-userSchema.statics.findByUsername = function (username) {
-  return this.findOne({ username });
-};
 
 const User = mongoose.model('User', userSchema);
 

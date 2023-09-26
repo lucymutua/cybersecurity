@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator';
-import bcrypt, { hash } from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/UserModel.js';
 import { generateToken } from '../middleware/middlewares.js';
@@ -23,12 +23,12 @@ export const registrarUsuario = async (req, res) => {
       username,
       email,
       name,
-      password: hashedPassword, 
-      role 
+      password: hashedPassword,
+      role
     });
 
-    const savedUser = await newUser.save();
-    const token = jwt.sign({ id: savedUser._id }, secretKey, {
+    await newUser.save();
+    const token = jwt.sign({ id: newUser._id }, secretKey, {
       expiresIn: '24h' // 24 horas de validez
     });
 
@@ -43,8 +43,8 @@ export const registrarUsuario = async (req, res) => {
 export const getUsers = async (req, res, next) => {
   try {
     const users = await User.find();
-    res.status(200).json(users); 
-    
+    res.status(200).json(users);
+
   } catch (error) {
     next(error);
     return
@@ -58,7 +58,7 @@ export const getUserById = async (req, res, next) => {
     const user = await User.findById(userId);
     res.status(200).json(user);
     if (!user) {
-      
+
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
   } catch (error) {
@@ -85,7 +85,7 @@ export const deleteUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const deletedUser = await User.findByIdAndDelete(userId);
-    res.status(200).json( {message: "Usuario eliminado correctamente"});
+    res.status(200).json({ message: "Usuario eliminado correctamente" });
     if (!deletedUser) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
@@ -94,7 +94,6 @@ export const deleteUser = async (req, res, next) => {
   }
 };
 
-// Controlador para iniciar sesión
 export const iniciarSesion = async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -112,12 +111,11 @@ export const iniciarSesion = async (req, res, next) => {
     if (!esPasswordValida) {
       return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
     }
-    next()
 
     // Genera un token JWT para la autenticación
-   /* const token = generateToken({ _id: user._id, name: user.name, role: user.role });
+    const token = generateToken({ _id: user._id, name: user.name, role: user.role });
 
-    res.status(200).json({ token });*/
+    res.status(200).json({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error en el servidor' });

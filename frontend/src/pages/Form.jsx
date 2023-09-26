@@ -60,7 +60,7 @@ function ContactForm() {
 
   // Función para verificar reCAPTCHA
 function verifyRecaptcha(recaptchaResponse) {
-  const secretKey = '6LfmiUUoAAAAACJq9_7CN69BL4hzPVW7FXd8zpYY'; // Reemplaza con tu clave secreta de reCAPTCHA
+  const secretKey = '6Ld_dlUoAAAAAOH3p6mOq54wQ1Sjz42cQY2oJgtj'; // Reemplaza con tu clave secreta de reCAPTCHA
   return axios.post('https://www.google.com/recaptcha/api/siteverify', null, {
     params: {
       secret: secretKey,
@@ -140,7 +140,7 @@ function verifyRecaptcha(recaptchaResponse) {
               </div>
 
               <ReCAPTCHA
-                sitekey="6LfmiUUoAAAAAONZ9ENBC5Q1WJk5xwirWCCuPFg7"
+                sitekey="6Ld_dlUoAAAAAF_anf-FuA-PE4MMADI9KS-WHR2L"
                 onChange={(value) => setRecaptchaValue(value)}
               />
 

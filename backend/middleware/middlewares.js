@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../models/UserModel.js';
@@ -9,9 +9,6 @@ dotenv.config();
 
 //const secretKey = config.secretKey;
 
-console.log(secretKey, "hola")
-
-//const secretKey = process.env.SECRET_KEY
 const tokenExpirationTime = 3 * 60 * 60 * 1000; 
 
 
@@ -19,13 +16,13 @@ const tokenExpirationTime = 3 * 60 * 60 * 1000;
 export async function encryptPasswordMiddleware(user, next) {
   try {
     if (user.isModified('password')) {
-      const salt = await bcrypt.genSalt(10); // Genera una sal aleatoria
-      const hash = await bcrypt.hash(user.password, salt); // Hashea la contraseña
-      user.password = hash; // Asigna el hash resultante a la propiedad 'password'
+      const salt = await bcrypt.genSalt(10); 
+      const hash = await bcrypt.hash(user.password, salt); 
+      user.password = hash; 
     }
-    next(); // Continúa con el flujo de ejecución normal
+    next(); 
   } catch (error) {
-    next(error); // Maneja los errores si ocurren
+    next(error); 
   }
 }
 
@@ -101,9 +98,9 @@ export const requireUser = (req, res, next) => {
  */
 
 // Middleware para validar contraseñas
-export function validatePasswordMiddleware(password) {
+/*export function validatePasswordMiddleware(password) {
   return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
-}
+}*/
 
 // Middleware para manejar errores
 export function errorMiddleware(error, req, res, next) {

@@ -1,11 +1,11 @@
 import express from 'express';
 import { getUsers, getUserById, updateUser, deleteUser, iniciarSesion, registrarUsuario  } from '../controllers/UserController.js';
-import { apiLimiter, authenticateTokenAndCheckUserRole,  loginLimiter, generateToken, requireAdmin } from '../middleware/middlewares.js';
+import { apiLimiter, authenticateTokenAndCheckUserRole, requireAdmin } from '../middleware/middlewares.js';
 
 const UserRouter = express.Router();
 
-console.log(generateToken)
-UserRouter.post('/login', iniciarSesion, generateToken);
+
+UserRouter.post('/login', iniciarSesion);
 
 UserRouter.post('/register', registrarUsuario);
 
