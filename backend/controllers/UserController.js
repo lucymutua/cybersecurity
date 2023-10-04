@@ -94,6 +94,28 @@ export const deleteUser = async (req, res, next) => {
   }
 };
 
+// Controlador para procesar el formulario
+export const processUser = async (req, res) => {
+  const recaptchaResponse = req.body.recaptchaResponse;
+
+  try {
+    const recaptchaVerification = await verifyRecaptcha(recaptchaResponse);
+    if (recaptchaVerification.data.success) {
+
+      const formData = req.body;
+
+      // Devuelve una respuesta de éxito
+      res.status(201).json({ message: 'User procesado con éxito' });
+    } else {
+      res.status(400).json({ error: 'Error de reCAPTCHA' });
+    }
+  } catch (error) {
+    // Manejar errores de la solicitud al servidor de reCAPTCHA
+    console.error('Error de verificación de reCAPTCHA:', error);
+    res.status(500).json({ error: 'Error de servidor' });
+  }
+};
+
 export const iniciarSesion = async (req, res, next) => {
   try {
     const { username, password } = req.body;

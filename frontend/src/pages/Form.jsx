@@ -4,8 +4,11 @@ import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import ReCAPTCHA from "react-google-recaptcha";
+import { useNavigate } from 'react-router-dom';
+
 
 function ContactForm() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -47,6 +50,8 @@ function ContactForm() {
 
         // Show a success alert
         setAlert({ type: 'success', message: 'Data sent successfully' });
+
+        navigate("/listforms");
       } else {
         // Show an error alert
         setAlert({ type: 'error', message: 'Error sending data' });
@@ -60,7 +65,7 @@ function ContactForm() {
 
   // Función para verificar reCAPTCHA
 function verifyRecaptcha(recaptchaResponse) {
-  const secretKey = '6Ld_dlUoAAAAAOH3p6mOq54wQ1Sjz42cQY2oJgtj'; // Reemplaza con tu clave secreta de reCAPTCHA
+  const secretKey = '6LfQnHUoAAAAAPR_i-xJDUr7HmyDhPjhO52XNiai'; // Reemplaza con tu clave secreta de reCAPTCHA
   return axios.post('https://www.google.com/recaptcha/api/siteverify', null, {
     params: {
       secret: secretKey,
@@ -140,7 +145,7 @@ function verifyRecaptcha(recaptchaResponse) {
               </div>
 
               <ReCAPTCHA
-                sitekey="6Ld_dlUoAAAAAF_anf-FuA-PE4MMADI9KS-WHR2L"
+                sitekey="6LfQnHUoAAAAAB7GMwoV9l9mpp70yWA4q8quA7tW"
                 onChange={(value) => setRecaptchaValue(value)}
               />
 

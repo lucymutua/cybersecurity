@@ -6,33 +6,31 @@ import FooterUser from '../components/footer/FooterUser.jsx';
 
 function List() {
   const [formList, setFormList] = useState([]);
-  const [authToken, setAuthToken] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
     // Extraer el token del localStorage y configurarlo en authToken
     const tokenFromLocalStorage = localStorage.getItem('token');
-    setAuthToken(tokenFromLocalStorage);
 
     const fetchData = async () => {
       try {
         // Configurar el token en el encabezado de la solicitud Axios
-        axios.defaults.headers.common['Authorization'] = `${tokenFromLocalStorage}`;
-
+        axios.defaults.headers.common['Authorization'] = `Bearer ${tokenFromLocalStorage}`;
+    
         // Realizar una solicitud GET a la API
         const response = await axios.get('http://localhost:8000/form');
-    
         const data = response.data;
+        
+        console.log('Datos obtenidos de la API:', data);
+    
         setFormList(data);
         setError(null); // Limpiar cualquier error anterior
-        console.log(response.data)
       } catch (error) {
         console.error('Error al obtener los datos de la API:', error);
-        
         setError('Hubo un error al cargar los datos. Por favor, inténtalo de nuevo más tarde.'); // Configurar el mensaje de error
       }
     };
-
+    
     fetchData();
   }, []);
 
@@ -43,7 +41,7 @@ function List() {
         <h1 className="text-center mb-4">Lista de Formularios</h1>
         {error && <p className="text-danger text-center">{error}</p>}
         <Row>
-          {formList.length > 0 ? (
+          {Array.isArray(formList) && formList.length > 0 ? (
             formList.map((form) => (
               <Col key={form._id} lg={4} md={6} sm={12} className="mb-4">
                 <Card>
@@ -72,3 +70,4 @@ function List() {
 }
 
 export default List;
+

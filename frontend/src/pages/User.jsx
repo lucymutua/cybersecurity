@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap"
 import { useNavigate } from "react-router-dom";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function User() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ function User() {
     message: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +30,11 @@ function User() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    if (!recaptchaValue) {
+      setAlert({ type: 'error', message: 'Por favor, completa reCAPTCHA.' });
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -40,7 +47,6 @@ function User() {
           type: "success",
           message: "Usuario registrado con éxito",
         });
-        // Redirige a la página de usuario después de un registro exitoso
         navigate("/usuario");
       } else {
         setAlert({
@@ -50,13 +56,11 @@ function User() {
       }
     } catch (error) {
       if (error.response) {
-        // Error de respuesta desde el servidor
         setAlert({
           type: "error",
           message: error.response.data.message || "Error desconocido",
         });
       } else if (error.request) {
-        // No se recibió respuesta del servidor
         console.error("No se recibió respuesta del servidor:", error.request);
         setAlert({
           type: "error",
@@ -64,7 +68,6 @@ function User() {
             "Error de red. Por favor, inténtalo de nuevo más tarde.",
         });
       } else {
-        // Otros errores
         console.error("Error al configurar la solicitud:", error.message);
         setAlert({
           type: "error",
@@ -77,6 +80,12 @@ function User() {
     }
   };
 
+  // Función para verificar reCAPTCHA
+  function verifyRecaptcha(recaptchaResponse) {
+    // Establece el valor de reCAPTCHA cuando se completa con éxito
+    setRecaptchaValue(recaptchaResponse);
+  }
+
   return (
     <>
       <Header />
@@ -85,14 +94,14 @@ function User() {
           <Col md={6}>
             <Card>
               <Card.Body>
-                <h2>User Registration</h2>
+                <h2>Registro de Usuario</h2>
                 {isLoading && <p className="text-center">Cargando...</p>}
                 {alert.type && (
                   <Alert variant={alert.type}>{alert.message}</Alert>
                 )}
                 <Form onSubmit={handleSubmit}>
                   <Form.Group controlId="formUsername">
-                    <Form.Label>Username</Form.Label>
+                    <Form.Label>Nombre de Usuario</Form.Label>
                     <Form.Control
                       type="text"
                       name="username"
@@ -102,7 +111,7 @@ function User() {
                     />
                   </Form.Group>
                   <Form.Group controlId="formPassword">
-                    <Form.Label>Password</Form.Label>
+                    <Form.Label>Contraseña</Form.Label>
                     <Form.Control
                       type="password"
                       name="password"
@@ -122,7 +131,7 @@ function User() {
                     />
                   </Form.Group>
                   <Form.Group controlId="formName">
-                    <Form.Label>Name</Form.Label>
+                    <Form.Label>Nombre</Form.Label>
                     <Form.Control
                       type="text"
                       name="name"
@@ -141,12 +150,17 @@ function User() {
                       required
                     />
                   </Form.Group>
+
+                  <ReCAPTCHA
+                    sitekey="6LeSunUoAAAAAGZPy4Jyqp1OOxLDDzloLNGv-Vo4"
+                    onChange={verifyRecaptcha}
+                  />
                   <Button
                     variant="primary"
                     type="submit"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Registrando..." : "Register"}
+                    {isLoading ? "Registrando..." : "Registrar"}
                   </Button>
                 </Form>
               </Card.Body>
@@ -158,6 +172,5 @@ function User() {
     </>
   );
 }
-
 export default User;
 

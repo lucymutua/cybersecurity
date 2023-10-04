@@ -35,7 +35,7 @@ function Login() {
 
         const userType = response.data.userType;
 
-        userType === "admin" ? navigate("/form") : navigate("/listforms");
+        userType === "admin" ? navigate("/login") : navigate("/");
         //userType === "admin" ? navigate("/user") : navigate("/usuario");
       } else {
         setError("No se recibió un token de acceso.");
