@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import HeaderUser from '../components/header/HeaderUser.jsx';
-import FooterUser from '../components/footer/FooterUser.jsx';
+import Header from '../components/header/Header';
+import Footer from '../components/footer/Footer';
+
 
 function List() {
   const [formList, setFormList] = useState([]);
@@ -36,7 +37,7 @@ function List() {
 
   return (
     <>
-      <HeaderUser />
+      <Header />
       <Container className="my-5" style={{ minHeight: "75vh" }}>
         <h1 className="text-center mb-4">Lista de Formularios</h1>
         {error && <p className="text-danger text-center">{error}</p>}
@@ -64,7 +65,7 @@ function List() {
           )}
         </Row>
       </Container>
-      <FooterUser />
+      <Footer />
     </>
   );
 }

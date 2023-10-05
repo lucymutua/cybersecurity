@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/header/Header";
-import Footer from "../components/footer/Footer";
+import imagen from '../../src/imagen/cyber.png';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -13,7 +12,7 @@ function Login() {
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -35,7 +34,8 @@ function Login() {
 
         const userType = response.data.userType;
 
-        userType === "admin" ? navigate("/login") : navigate("/");
+        userType === "admin" ? navigate("/") : navigate("/user");
+
         //userType === "admin" ? navigate("/user") : navigate("/usuario");
       } else {
         setError("No se recibió un token de acceso.");
@@ -50,10 +50,14 @@ function Login() {
 
   return (
     <>
-      <Header />
       <Container style={{ minHeight: '75vh' }}>
         <Row className="justify-content-center" >
-        <Col md={6} style={{ marginTop: '6rem' }}>
+
+          <div className="image-container">
+            <img className="img-fluid" src={imagen} alt="Cyber Security" />
+          </div>
+
+          <Col md={6} style={{ marginTop: '6rem' }}>
             <Card bg="white" text="dark">
               <Card.Body>
                 <h2 className="card-title text-center mb-4">Iniciar sesión</h2>
@@ -94,8 +98,15 @@ function Login() {
             </Card>
           </Col>
         </Row>
+        <section className="cta text-center my-4">
+          <p>
+            Contáctanos para obtener una consulta gratuita.
+          </p>
+          <a href="/form" className="nav-link" style={{ marginTop: '10px' }}>
+            <Button className="cta-button btn-danger">Contáctanos</Button>
+          </a>
+        </section>
       </Container>
-      <Footer />
     </>
   );
 }

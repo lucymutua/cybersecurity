@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import HeaderUser from '../components/header/HeaderUser.jsx';
-import FooterUser from '../components/footer/FooterUser.jsx';
+import Header from '../components/header/Header';
+import Footer from '../components/footer/Footer';
 
 function Usuario() {
-    const [usuarios, setUsuarios] = useState([]); // Cambié el nombre de la variable para que sea más descriptiva
+    const [usuarios, setUsuarios] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -17,14 +17,19 @@ function Usuario() {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${tokenFromLocalStorage}`;
 
                 // Realizar una solicitud GET a la API para obtener la lista de usuarios
-                const response = await axios.get('http://localhost:8000/user'); // Cambié la URL a '/user' si esta es la ruta correcta
+                const response = await axios.get("http://localhost:8000/user"); // Cambia la URL a la ruta correcta de la API
 
-                // Verificar si la respuesta contiene datos válidos
-                if (Array.isArray(response.data)) {
-                    setUsuarios(response.data);
-                    setError(null); // Limpiar cualquier error anterior
+                // Verificar el código de estado HTTP
+                if (response.status === 200) {
+                    // Verificar si la respuesta contiene datos válidos
+                    if (Array.isArray(response.data)) {
+                        setUsuarios(response.data);
+                        setError(null); // Limpiar cualquier error anterior
+                    } else {
+                        setError('La respuesta de la API no contiene una lista de usuarios válida.');
+                    }
                 } else {
-                    setError('La respuesta de la API no contiene una lista de usuarios válida.');
+                    setError('Error al obtener los datos de la API: Código de estado ' + response.status);
                 }
             } catch (error) {
                 console.error('Error al obtener los datos de la API:', error);
@@ -39,7 +44,7 @@ function Usuario() {
 
     return (
         <>
-            <HeaderUser />
+            <Header />
             <Container className="my-5" style={{ minHeight: "75vh" }}>
                 <h1 className="text-center mb-4">Lista de Usuarios</h1>
                 {loading && <p className="text-center">Cargando...</p>}
@@ -55,7 +60,6 @@ function Usuario() {
                                         <Card.Text>
                                             <strong>Username: </strong> {user.username}<br />
                                             <strong>Email: </strong> {user.email}<br />
-                                            <strong>Password: </strong> {user.password}<br />
                                             <strong>Name: </strong> {user.name}<br />
                                             <strong>Role: </strong> {user.role}<br />
                                         </Card.Text>
@@ -69,10 +73,11 @@ function Usuario() {
                     )}
                 </Row>
             </Container>
-            <FooterUser />
+            <Footer />
         </>
     );
 }
 
 export default Usuario;
+
 
