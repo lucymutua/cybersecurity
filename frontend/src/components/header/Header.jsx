@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaUserLock } from 'react-icons/fa';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import imagen from '../../../src/imagen/myapp.png';
 
@@ -36,7 +35,9 @@ const Header = () => {
             <a href="/user" className="login-button nav-link">
               Register
             </a>
-
+            <a href="/form" className="login-button nav-link">
+              Contact
+            </a>
             {/* Botón de cierre de sesión con el manejador de eventos */}
             <a href="/" className="login-button nav-link" onClick={handleLogout}>
               Logout
