@@ -60,7 +60,8 @@ function Login() {
           <Col md={6} style={{ marginTop: '6rem' }}>
             <Card bg="white" text="dark">
               <Card.Body>
-                <h2 className="card-title text-center mb-4">Iniciar sesión</h2>
+              <h2 className="card-title text-center mb-4 text-primary">Iniciar sesión</h2>
+
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Form onSubmit={handleSubmit}>
                   <Form.Group>
@@ -87,7 +88,7 @@ function Login() {
                   </Form.Group> <br />
                   <Button
                     type="submit"
-                    variant="primary"
+                    variant="outline-primary"
                     className="btn-dark text-white mx-auto"
                     disabled={loading}
                   >
