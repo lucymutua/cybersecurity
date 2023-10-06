@@ -84,7 +84,7 @@ function Login() {
                       required
                       placeholder="Ingresa tu contraseña"
                     />
-                  </Form.Group>
+                  </Form.Group> <br />
                   <Button
                     type="submit"
                     variant="primary"
