@@ -35,11 +35,11 @@ const Header = () => {
             <a href="/user" className="login-button nav-link">
               Register
             </a>
-            <a href="/form" className="login-button nav-link">
+            <a href="/form" className="contact-button nav-link">
               Contact
             </a>
             {/* Botón de cierre de sesión con el manejador de eventos */}
-            <a href="/" className="login-button nav-link" onClick={handleLogout}>
+            <a href="/" className="logout-button nav-link" onClick={handleLogout}>
               Logout
             </a>
           </Nav>

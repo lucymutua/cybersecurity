@@ -98,14 +98,6 @@ function Login() {
             </Card>
           </Col>
         </Row>
-        <section className="cta text-center my-4">
-          <p>
-            Contáctanos para obtener una consulta gratuita.
-          </p>
-          <a href="/form" className="nav-link" style={{ marginTop: '10px' }}>
-            <Button className="cta-button btn-danger">Contáctanos</Button>
-          </a>
-        </section>
       </Container>
     </>
   );
